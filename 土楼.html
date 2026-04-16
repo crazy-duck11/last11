@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>土楼介绍</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+  <style>
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    * {
+      animation: fadeIn 1.2s ease forwards;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 仿宋, sans-serif;
+    }
+
+    body {
+      background: #e1d5c8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    /* 👇 AI搜索样式（和你其他页面完全统一） */
+    .ai-search-bar {
+      max-width: 900px;
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      padding: 0 20px;
+    }
+    #aiInput {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 2px solid #8c4a42;
+      border-radius: 8px;
+      outline: none;
+    }
+    #aiBtn {
+      padding: 12px 24px;
+      background: #8c4a42;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #aiBtn:hover {
+      background: #703a33;
+    }
+    .answer-box {
+      max-width: 900px;
+      width: 100%;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      border: 2px solid #7fa284;
+      min-height: 80px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .main-box {
+      width: 1200px;
+      height:700px;
+      border: 2px solid #8d6c18;
+      background-color: #fafafa;
+      position: relative;
+      transfor:Y(20px);
+      transform-origin: center center;
+  
+    }
+
+    .tag {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 20px;
+      color: #555;
+      z-index: 99;
+      pointer-events: none;
+    }
+
+    .circle-box {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid #b49678;
+      overflow: visible;
+      background: #f8f8f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .circle-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      border-radius: 50%;
+      transform: scale(1.15);
+    }
+
+    #box13,
+    #box14,
+    #box15,
+    #box16 {
+      overflow: visible !important;
+    }
+
+    .dashed-box {
+      position: absolute;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dashed-box input,
+    .dashed-box textarea {
+      width: 90%;
+      height: 85%;
+      border: none;
+      outline: none;
+      background: transparent;
+      text-align: center;
+      font-size: 14px;
+      resize: none;
+    }
+
+    .rect-img-box {
+      position: absolute;
+      border: 2px solid transparent;
+      overflow: hidden;
+      background: #f8f8f8;
+    }
+
+    .rect-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .chart-box {
+      position: absolute;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    #box17 {
+      width: 65px;
+      height: 640px;
+      left: 10px;
+      top: 30px;
+    }
+
+    #box17 .tag {
+      writing-mode: vertical-rl;
+    }
+
+    #box12 {
+      width: 100px;
+      height: 200px;
+      left: 106px;
+      top: 30px;
+    }
+
+    #box11 {
+      width: 160px;
+      height: 220px;
+      left: 198px;
+      top: 30px;
+      z-index: 10;
+    }
+
+    #box11 .tag {
+      top: 15px;
+      font-size: 16px;
+    }
+
+    #box4 {
+      width: 600px;
+      height: 600px;
+      left: 50%;
+      top: 40%;
+      transform: translate(-50%, -50%);
+      position: absolute;
+      overflow: hidden;
+      border: none;
+      z-index: 1;
+    }
+
+#box4 img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      -webkit-mask: radial-gradient(circle at center, rgb(209, 175, 101) 90%, transparent 100%);
+      mask: radial-gradient(circle at center, black 90%, transparent 100%);
+    }
+
+    #box13 {
+      width: 80px;
+      height: 80px;
+      left: 190px;
+      top: 260px;
+    }
+
+    #box14 {
+      width: 80px;
+      height: 80px;
+      left: 240px;
+      top: 380px;
+    }
+
+    #box15 {
+      width: 80px;
+      height: 80px;
+      left: 350px;
+      top: 510px;
+    }
+
+    #box16 {
+      width: 80px;
+      height: 80px;
+      left: 540px;
+      top: 540px;
+    }
+
+    #box1 {
+      width: 100px;
+      height: 100px;
+      right: 250px;
+      top: 40px;
+      cursor: pointer;
+    }
+
+    #box2 {
+      width: 100px;
+      height: 100px;
+      right: 130px;
+      top: 40px;
+      cursor: pointer;
+    }
+
+    #box3 {
+      width: 100px;
+      height: 100px;
+      right: 10px;
+      top: 40px;
+      cursor: pointer;
+    }
+
+    #box5 {
+      width: 90px;
+      height: 220px;
+      right: 240px;
+      top: 150px;
+    }
+
+    #box6 {
+      width: 90px;
+      height: 220px;
+      right: 125px;
+      top: 150px;
+    }
+
+    #box7 {
+      width: 90px;
+      height: 220px;
+      right: 15px;
+      top: 150px;
+    }
+
+    #box5 .tag,
+    #box6 .tag,
+    #box7 .tag {
+      top: 10px;
+      font-size: 16px;
+    }
+
+    #box8 {
+      width: 160px;
+      height: 160px;
+      right: 180px;
+      top: 380px;
+    }
+
+    #box9 {
+      width: 160px;
+      height: 160px;
+      right: 10px;
+      top: 380px;
+    }
+
+    #box10 {
+      width: 450px;
+      height: 100px;
+      right: 10px;
+      bottom: 20px;
+    }
+
+    .dashed-box textarea {
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+      resize: none;
+      font-size: 15px;
+      line-height: 1.5;
+      background: transparent;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    .dashed-box textarea::placeholder {
+      white-space: pre-line;
+      color: #666;
+    }
+
+    #box20 {
+      width: 300px;
+      height: 400px;
+      left: 100px;
+      top: 400px;
+    }
+
+    .popup-text {
+      position: absolute;
+      left: 110%;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 8px 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      font-size: 14px;
+      white-space: nowrap;
+      z-index: 99999999999 !important;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.3s;
+      pointer-events: none;
+    }
+
+    .popup-text.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    #box17 {
+      width: 65px;
+      height: 640px;
+      left: 10px;
+      top: 30px;
+      position: absolute;
+      overflow: visible !important;
+      z-index: 10 !important;
+    }
+
+    #box17::before,
+    #box17::after,
+    #box17 .timeline-line-left,
+    #box17 .timeline-line-right {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 20px;
+      bottom: 20px;
+      transform: translateX(-50%);
+      z-index: 1;
+    }
+
+    #box17::before {
+      width: 3px;
+      background: #b49678;
+    }
+
+    #box17::after {
+      width: 1px;
+      left: calc(50% - 8px);
+      background: repeating-linear-gradient(to bottom,
+          #b49678 0 4px,
+          transparent 4px 8px);
+    }
+
+    #box17 .timeline-line-right {
+      content: "";
+      position: absolute;
+      left: calc(50% + 8px);
+      top: 20px;
+      bottom: 20px;
+      width: 1px;
+      background: repeating-linear-gradient(to bottom,
+          #b49678 0 4px,
+          transparent 4px 8px);
+      z-index: 1;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #d4a046;
+      border: 2px solid #b49678;
+      cursor: pointer;
+      z-index: 2;
+      transition: transform 0.2s;
+    }
+
+    .timeline-dot:hover {
+      transform: translateX(-50%) scale(1.1);
+    }
+
+    .timeline-period {
+      position: absolute;
+      left: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .timeline-popup {
+      position: absolute !important;
+      z-index: 999999999 !important;
+      width: 320px;
+      padding: 12px 16px;
+      background: #fff;
+      border: 1px solid #b49678;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      font-size: 14px;
+      line-height: 1.6;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.3s;
+      pointer-events: auto;
+      left: 80px;
+    }
+
+    .timeline-popup.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(-50%);
+    }
+
+    .main-box>*:not(#box17):not(.timeline-popup) {
+      z-index: 1 !important;
+    }
+
+    #dot-yuan {
+      top: 40px;
+    }
+
+    #dot-ming {
+      top: 180px;
+    }
+
+    #dot-min {
+      top: 320px;
+    }
+
+    #dot-19 {
+      top: 460px;
+    }
+
+    #dot-modern {
+      top: 600px;
+    }
+
+    /* 新增：时间轴变暗样式 */
+    #box17.dim {
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    .popup-mask {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 99999998;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.3s;
+    }
+
+    .popup-mask.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .tulou-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 99999999;
+      width: 550px;
+      background: #b49678;
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.3s;
+    }
+
+    .tulou-popup.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 22px;
+      cursor: pointer;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 👇 AI搜索框（加在最顶部，不影响你原有任何布局） -->
+  <div class="ai-search-bar">
+    <input type="text" id="aiInput" placeholder="请输入关于土楼的问题...">
+    <button id="aiBtn">AI 问答</button>
+  </div>
+  <div class="answer-box" id="aiAnswer">AI回答将显示在这里</div>
+
+  <div class="main-box">
+    <div class="rect-img-box" id="box17">
+      <div class="timeline-line"></div>
+      <div class="vertical-timeline">
+        <div class="timeline-dot" id="dot-yuan" onclick="togglePopup('popup-yuan')">
+          <span class="timeline-period">宋元</span>
+          <div class="timeline-popup" id="popup-yuan">
+            <strong>宋元时期（形成阶段）</strong><br>
+            早期土楼规模较小，结构较简单，大多无石砌墙基，装饰粗糙，形制以方形、长方形为主。
+          </div>
+        </div>
+        <div class="timeline-dot" id="dot-ming" onclick="togglePopup('popup-ming')">
+          <span class="timeline-period">明清</span>
+          <div class="timeline-popup" id="popup-ming">
+            <strong>明清时期（成熟鼎盛）</strong><br>
+            福建土楼工艺炉火纯青，形成方楼、五凤楼、圆楼等体系，诞生承启楼等世界知名代表作。
+          </div>
+        </div>
+        <div class="timeline-dot" id="dot-min" onclick="togglePopup('popup-min')">
+          <span class="timeline-period">民国</span>
+          <div class="timeline-popup" id="popup-min">
+            <strong>民国时期（中西融合）</strong><br>
+            吸收西洋建筑技术，部分土楼出现中西合璧的装饰与形制，风格更具多样性。
+          </div>
+        </div>
+        <div class="timeline-dot" id="dot-19" onclick="togglePopup('popup-19')">
+          <span class="timeline-period">19世纪</span>
+          <div class="timeline-popup" id="popup-19">
+            <strong>19世纪晚期（海外影响）</strong><br>
+            海外文化深度融入，土楼出现中西融合的建筑形式，装饰更具时代特色。
+          </div>
+        </div>
+        <div class="timeline-dot" id="dot-modern" onclick="togglePopup('popup-modern')">
+          <span class="timeline-period">现代</span>
+          <div class="timeline-popup" id="popup-modern">
+            <strong>20世纪50年代后（多元发展）</strong><br>
+            土楼规模扩大、结构优化、功能完善，风格向多元化发展，成为世界文化遗产。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rect-img-box" id="box12">
+      <span class="tag"></span>
+      <img src="土楼侧切面.jpg" alt="图片12">
+    </div>
+    <div class="dashed-box" id="box11">
+      <span class="tag"></span>
+      <textarea placeholder="门：厚木+铁板，顶设防火水槽
+窗户：底层无窗，上层窄小窗（枪眼）
+顶层：瞭望台、女墙、射击孔
+内部：水井、粮仓、厕所，可闭门数月"></textarea>
+    </div>
+    <div id="box4">
+      <span class="tag"></span>
+      <img src="土楼.png" alt="土楼主图">
+    </div>
+
+    <div class="circle-box" id="box13" onclick="togglePopup('popup13')">
+      <span class="tag"></span>
+      <img src="制作材料泥沙.png" alt="图片13" title="制作材料">
+      <div class="popup-text" id="popup13">细沙、黏土、石灰</div>
+    </div>
+    <div class="circle-box" id="box14" onclick="togglePopup('popup14')">
+      <span class="tag"></span>
+      <img src="制作材料 杉木.png" alt="图片14">
+      <div class="popup-text" id="popup14">杉木</div>
+    </div>
+    <div class="circle-box" id="box15" onclick="togglePopup('popup15')">
+      <span class="tag"></span>
+      <img src="制作材料 瓦屋.png" alt="图片15">
+      <div class="popup-text" id="popup15">青砖瓦</div>
+    </div>
+    <div class="circle-box" id="box16" onclick="togglePopup('popup16')">
+      <span class="tag"></span>
+      <img src="土楼 制作材料.png" alt="图片16">
+      <div class="popup-text" id="popup16">竹片</div>
+    </div>
+
+
+<div class="circle-box" id="box1" onclick="openLouPopup('yuan')">
+      <span class="tag"></span>
+      <img src="圆形土楼.jpg" alt="圆楼">
+    </div>
+    <div class="circle-box" id="box2" onclick="openLouPopup('fang')">
+      <span class="tag"></span>
+      <img src="方楼.jpg" alt="方楼">
+    </div>
+    <div class="circle-box" id="box3" onclick="openLouPopup('wu')">
+      <span class="tag"></span>
+      <img src="五凤楼.jpg" alt="五凤楼">
+    </div>
+
+    <div class="dashed-box" id="box5">
+      <span class="tag"></span>
+      <textarea placeholder="代表：承启楼、二宜楼、振成楼
+特点：通风采光均匀、无死角、5层、高16.8米"></textarea>
+    </div>
+    <div class="dashed-box" id="box6">
+      <span class="tag"></span>
+      <textarea placeholder="代表：和昌楼、世泽楼
+特点：端庄稳重，中原传统；角落采光差，易受攻击"></textarea>
+    </div>
+    <div class="dashed-box" id="box7">
+      <span class="tag"></span>
+      <textarea placeholder="代表：福裕楼
+特点：中高边低，凤凰展翅；依山而建，等级森严"></textarea>
+    </div>
+
+    <div class="chart-box" id="box8">
+      <canvas id="chart8"></canvas>
+    </div>
+    <div class="chart-box" id="box9">
+      <canvas id="chart9"></canvas>
+    </div>
+    <div class="rect-img-box" id="box10">
+      <span class="tag"></span>
+      <img src="土楼 时间轴.png" alt="时间轴10">
+    </div>
+
+    <div style="position:absolute;
+    left:50px;
+    top:450px;
+    width:300px;
+    height:250px;
+    background:transparent;
+    border-radius:8px;
+    padding:15px;
+    overflow:hidden;">
+      <img src="柱状图.png" alt="土楼直径对比" style="width:100%;
+      height:100%;
+      object-fit:contain;
+      margin:0;
+      padding:0;
+      display:block;">
+    </div>
+  </div>
+
+  <div class="popup-mask" id="popupMask" onclick="closeLouPopup()"></div>
+  <div class="tulou-popup" id="yuanPopup">
+    <span class="popup-close" onclick="closeLouPopup()">&times;</span>
+    <img src="圆楼雷达图.png" width="500px">
+  </div>
+  <div class="tulou-popup" id="fangPopup">
+    <span class="popup-close" onclick="closeLouPopup()">&times;</span>
+    <img src="方楼雷达图.png" width="500px">
+  </div>
+  <div class="tulou-popup" id="wuPopup">
+    <span class="popup-close" onclick="closeLouPopup()">&times;</span>
+    <img src="五凤楼雷达图.png" width="500px">
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <script>
+    window.onload = function () {
+      new Chart(document.getElementById('chart8').getContext('2d'), {
+        type: 'pie',
+        data: {
+          labels: ['圆楼', '方楼', '五凤楼、异形楼'],
+          datasets: [{
+            data: [20, 70, 10],
+            backgroundColor: ['#be4a36', '#497987', '#f0e6d2'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: '土楼类型占比', font: { size: 14, weight: 'bold' } }
+          }
+        }
+      });
+
+      new Chart(document.getElementById('chart9').getContext('2d'), {
+        type: 'pie',
+        data: {
+          labels: ['福建', '广东', '江西'],
+          datasets: [{
+            data: [92, 7, 1],
+            backgroundColor: ['#d2dce6', '#54413a', '#f3d885'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: '土楼地区占比', font: { size: 14, weight: 'bold' } }
+          }
+        }
+      });
+    };
+
+    function togglePopup(popupId) {
+      const popup = document.getElementById(popupId);
+      popup.classList.toggle('show');
+    }
+
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.timeline-dot') && !e.target.closest('.timeline-popup')) {
+        document.querySelectorAll('.timeline-popup').forEach(p => p.classList.remove('show'));
+      }
+    });
+
+    function openLouPopup(type) {
+      closeLouPopup();
+      const mask = document.getElementById('popupMask');
+      const pop = document.getElementById(type + 'Popup');
+      mask.classList.add('show');
+      pop.classList.add('show');
+      // 打开时让时间轴变暗
+      document.getElementById('box17').classList.add('dim');
+    }
+
+    function closeLouPopup() {
+      const mask = document.getElementById('popupMask');
+      mask.classList.remove('show');
+      document.querySelectorAll('.tulou-popup').forEach(p => p.classList.remove('show'));
+      // 关闭时恢复时间轴
+      document.getElementById('box17').classList.remove('dim');
+    }
+
+    // 👇 AI搜索逻辑（和你其他页面完全一致）
+    const aiBtn = document.getElementById('aiBtn');
+    const aiInput = document.getElementById('aiInput');
+    const aiAnswer = document.getElementById('aiAnswer');
+
+    aiBtn.onclick = async () => {
+      const prompt = aiInput.value.trim();
+      if (!prompt) return;
+      aiAnswer.innerText = 'AI 正在思考中...';
+      try {
+        const res = await fetch('/api/ai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        aiAnswer.innerText = data.answer || '暂无回答';
+      } catch (e) {
+        aiAnswer.innerText = '请求失败，请确保后端服务已启动';
+      }
+    };
+  </script>
+</body>
+
+</html>
