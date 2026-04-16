@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>故宫介绍</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "仿宋", sans-serif;
+      line-height: 1;
+    }
+
+    html,
+    body {
+      width: 100%;
+      overflow-x: hidden !important;
+      margin: 0;
+      padding: 0;
+    }
+
+    img {
+      display: block;
+      vertical-align: middle;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      border: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding: clamp(15px, 2vw, 30px);
+    }
+
+    .main-content {
+      display: flex;
+      gap: 0;
+      margin-bottom: clamp(20px, 3vw, 50px);
+      align-items: stretch;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .left-area {
+      display: flex;
+      gap: 0;
+      flex-shrink: 0;
+      align-items: stretch;
+    }
+
+    .carousel-container {
+      width: clamp(120px, 14vw, 180px);
+      height: clamp(400px, 48vw, 600px);
+      border: 1px solid #333;
+      border-right: none;
+      clip-path: path('M 0 0 L 180 0 A 100 300 0 0 1 180 600 L 0 600 Z');
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      flex-shrink: 0;
+    }
+
+    .carousel-wrapper {
+      display: flex;
+      flex-direction: column;
+      animation: verticalScroll 100s linear infinite;
+      height: 200%;
+    }
+
+    .carousel-item {
+      width: 100%;
+      height: clamp(80px, 9.6vw, 120px);
+      border: 1px solid #333;
+      border-right: none;
+      clip-path: path('M 0 0 L 180 0 A 100 60 0 0 1 180 120 L 0 120 Z');
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fafafa;
+      flex-shrink: 0;
+      font-size: clamp(12px, 1.2vw, 14px);
+      margin-left: -1px;
+    }
+
+    @keyframes verticalScroll {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-50%);
+      }
+    }
+
+    .main-img {
+      width: clamp(300px, 36vw, 450px);
+      height: clamp(400px, 48vw, 600px);
+      border: 1px solid #333;
+      border-left: none;
+      clip-path: path('M 0 0 A 100 300 0 0 0 0 600 L 450 600 L 450 0 Z');
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
+      overflow: hidden;
+      position: relative;
+      margin-left: -1px;
+      z-index: 2;
+      border-radius: 0 300px 300px 0;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25), 0 4px 10px rgba(0, 0, 0, 0.25);
+      flex-shrink: 0;
+    }
+
+    .main-img a {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .right-area {
+      flex: 1;
+      min-width: 300px;
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(15px, 2vw, 25px);
+      margin-left: clamp(15px, 2.5vw, 30px);
+      height: auto;
+      min-height: clamp(400px, 48vw, 600px);
+      align-items: stretch;
+      justify-items: stretch;
+      width: 100%;
+    }
+
+    .img-box {
+      border: 1px solid #333;
+      background: #f5f5f5;
+      height: 100%;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 6px 12px rgba(160, 21, 21, 0.25);
+    }
+
+    .img-box a {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .text-box {
+      border: 1px solid #8B4513;
+      border-radius: 10px;
+      background-color: #E4DBC8;
+      padding: clamp(8px, 1vw, 10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(12px, 1.2vw, 14px);
+      line-height: 1.6;
+      font-family: "宋体";
+      color: #5D1B1E;
+      height: 100%;
+      width: 100%;
+      box-shadow: 0 6px 12px rgba(149, 21, 21, 0.25);
+    }
+
+    .small-text-box {
+      border: 1px dashed #333;
+      background-color: #AD6E4C;
+      padding: 4px 8px;
+      text-align: center;
+      font-size: clamp(12px, 1.2vw, 14px);
+      margin-top: 8px;
+      font-family: "宋体";
+      color: #f5f5f5;
+      border-radius: 10px;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .img-item {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+    }
+
+    /* ========== 底部流程区域核心修改：小圆均匀分散+箭头拉长 ========== */
+    .flow-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      /* 核心：四个小圆两端对齐，均匀分散 */
+      width: 100%;
+      margin-top: clamp(10px, 2vw, 30px);
+      position: relative;
+      z-index: 99;
+      flex-wrap: nowrap;
+      /* 禁止换行，保证一行均匀分布 */
+      gap: 0;
+      /* 清除间隙，完全靠space-between分配空间 */
+    }
+
+    .flow-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+      /* 禁止压缩，保证小圆大小一致 */
+    }
+
+    .flow-circle {
+      width: clamp(60px, 9vw, 110px) !important;
+      height: clamp(60px, 9vw, 110px) !important;
+      border-radius: 50%;
+      border: 1px solid #333;
+      background: #f5f5f5;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(138, 9, 9, 0.25);
+    }
+
+    .flow-text {
+      width: clamp(70px, 7vw, 80px);
+      height: 26px;
+      border: 1px dashed #333;
+      background-color: #AD6E4C;
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(13px, 1.3vw, 15px);
+      font-family: "宋体";
+      color: #f5f5f5;
+    }
+
+    /* 核心：箭头拉长，自动填满两个小圆之间的所有空隙 */
+    .flow-arrow {
+      flex: 1;
+      /* 核心：自动占满剩余空间，实现均匀拉长 */
+      text-align: center;
+      font-size: clamp(30px, 5vw, 60px);
+      color: #333;
+      line-height: 1;
+      transform: scaleX(5);
+      /* 核心：箭头横向拉长，数值越大拉得越长 */
+      color: #bb6b32;
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.15));
+      flex-shrink: 0;
+      margin: 0;
+    }
+
+    /* 页面入场动画：完全保留原始效果 */
+    body {
+      background-color: #DDE0DA;
+      opacity: 0;
+      animation: page-base-fade 0.8s ease-out forwards;
+    }
+
+    @keyframes page-base-fade {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .right-wrapper {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: right-fade-up 0.7s ease-out 0.25s forwards;
+    }
+
+    @keyframes right-fade-up {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .flow-section>* {
+      opacity: 0;
+      transform: translateY(8px);
+      animation: flow-item-fade 0.5s ease-out forwards;
+    }
+
+    .flow-section>*:nth-child(1) {
+      animation-delay: 0.7s;
+    }
+
+    .flow-section>*:nth-child(2) {
+      animation-delay: 0.8s;
+    }
+
+    .flow-section>*:nth-child(3) {
+      animation-delay: 0.9s;
+    }
+
+    .flow-section>*:nth-child(4) {
+      animation-delay: 1.0s;
+    }
+
+    .flow-section>*:nth-child(5) {
+      animation-delay: 1.1s;
+    }
+
+    .flow-section>*:nth-child(6) {
+      animation-delay: 1.2s;
+    }
+
+    .flow-section>*:nth-child(7) {
+      animation-delay: 1.3s;
+    }
+
+    @keyframes flow-item-fade {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ========== 平板端适配 768px-1200px ========== */
+    @media screen and (max-width: 1200px) {
+      .main-content {
+        justify-content: center;
+      }
+
+      .right-area {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        width: 100%;
+        margin-left: 0;
+        margin-top: 20px;
+        min-height: auto;
+      }
+
+      .flow-arrow {
+        transform: scaleX(3);
+        /* 平板端适配箭头拉长比例 */
+      }
+    }
+
+    /* ========== 手机端适配 768px以下 ========== */
+    @media screen and (max-width: 768px) {
+      .main-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+      }
+
+      .left-area {
+        width: 100%;
+        max-width: 500px;
+        justify-content: center;
+      }
+
+      .carousel-container {
+        width: clamp(100px, 25vw, 150px);
+        height: clamp(350px, 70vw, 500px);
+      }
+
+      .carousel-item {
+        height: clamp(70px, 14vw, 100px);
+      }
+
+      .main-img {
+        width: clamp(250px, 55vw, 350px);
+        height: clamp(350px, 70vw, 500px);
+        border-radius: 0 50% 50% 0;
+      }
+
+      .right-area {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 20px;
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, auto);
+        gap: 15px;
+      }
+
+      .flow-section {
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        gap: 10px;
+      }
+
+      .flow-arrow {
+        display: none;
+        /* 小屏隐藏箭头，避免拥挤 */
+      }
+    }
+
+    /* ========== 超小屏适配 480px以下 ========== */
+    @media screen and (max-width: 480px) {
+      .container {
+        padding: 10px;
+      }
+
+      .carousel-container {
+        width: 90px;
+        height: 320px;
+      }
+
+      .carousel-item {
+        height: 64px;
+      }
+
+      .main-img {
+        width: 220px;
+        height: 320px;
+      }
+
+      .flow-section {
+        justify-content: space-evenly;
+        gap: 10px;
+      }
+
+      .text-box {
+        padding: 8px;
+        font-size: 12px;
+      }
+
+      .small-text-box {
+        font-size: 12px;
+      }
+    }
+  </style>
+
+  <!-- 👇 AI搜索样式（和你其他页面完全统一） -->
+  <style>
+    .ai-search-bar {
+      max-width: 900px;
+      margin: 20px auto 0;
+      display: flex;
+      gap: 10px;
+      padding: 0 20px;
+    }
+    #aiInput {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 2px solid #8c4a42;
+      border-radius: 8px;
+      outline: none;
+    }
+    #aiBtn {
+      padding: 12px 24px;
+      background: #8c4a42;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #aiBtn:hover {
+      background: #703a33;
+    }
+    .answer-box {
+      max-width: 900px;
+      margin: 15px auto 30px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      border: 2px solid #7fa284;
+      min-height: 80px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 👇 AI搜索框（加在最顶部，不影响你原有任何布局） -->
+  <div class="ai-search-bar">
+    <input type="text" id="aiInput" placeholder="请输入关于故宫的问题...">
+    <button id="aiBtn">AI 问答</button>
+  </div>
+  <div class="answer-box" id="aiAnswer">AI回答将显示在这里</div>
+
+  <!-- ===================== 以下完全是你原来的代码，一字未改 ===================== -->
+  <div class="container">
+
+    <div class="main-content">
+      <div class="left-area">
+        <div class="carousel-container">
+          <div class="carousel-wrapper">
+            <div class="carousel-item">
+              <img src="骑凤仙人.jpg" alt="骑凤仙人">
+            </div>
+            <div class="carousel-item">
+              <img src="龙.png" alt="龙">
+            </div>
+            <div class="carousel-item">
+              <img src="凤.jpg" alt="凤">
+            </div>
+            <div class="carousel-item">
+              <img src="狮子.jpg" alt="狮子">
+            </div>
+            <div class="carousel-item">
+              <img src="天马.jpg" alt="天马">
+            </div>
+            <div class="carousel-item">
+              <img src="海马.jpg" alt="海马">
+            </div>
+            <div class="carousel-item">
+              <img src="鱼.jpg" alt="押鱼">
+            </div>
+            <div class="carousel-item">
+              <img src="狻猊 .jpg" alt="狻猊">
+            </div>
+            <div class="carousel-item">
+              <img src="獬豸.jpg" alt="獬豸">
+            </div>
+            <div class="carousel-item">
+              <img src="斗牛.jpg" alt="斗牛">
+            </div>
+            <div class="carousel-item">
+              <img src="骑凤仙人.jpg" alt="骑凤仙人">
+            </div>
+            <div class="carousel-item">
+              <img src="龙.png" alt="龙">
+            </div>
+            <div class="carousel-item">
+              <img src="凤.jpg" alt="凤">
+            </div>
+            <div class="carousel-item">
+              <img src="狮子.jpg" alt="狮子">
+            </div>
+            <div class="carousel-item">
+              <img src="天马.jpg" alt="天马">
+            </div>
+            <!-- 无缝滚动重复内容 -->
+            <div class="carousel-item">
+              <img src="骑凤仙人.jpg" alt="骑凤仙人">
+            </div>
+            <div class="carousel-item">
+              <img src="龙.png" alt="龙">
+            </div>
+            <div class="carousel-item">
+              <img src="凤.jpg" alt="凤">
+            </div>
+            <div class="carousel-item">
+              <img src="狮子.jpg" alt="狮子">
+            </div>
+            <div class="carousel-item">
+              <img src="天马.jpg" alt="天马">
+            </div>
+            <div class="carousel-item">
+              <img src="海马.jpg" alt="海马">
+            </div>
+            <div class="carousel-item">
+              <img src="鱼.jpg" alt="押鱼">
+            </div>
+            <div class="carousel-item">
+              <img src="狻猊 .jpg" alt="狻猊">
+            </div>
+            <div class="carousel-item">
+              <img src="獬豸.jpg" alt="獬豸">
+            </div>
+            <div class="carousel-item">
+              <img src="斗牛.jpg" alt="斗牛">
+            </div>
+            <div class="carousel-item">
+              <img src="骑凤仙人.jpg" alt="骑凤仙人">
+            </div>
+            <div class="carousel-item">
+              <img src="龙.png" alt="龙">
+            </div>
+            <div class="carousel-item">
+              <img src="凤.jpg" alt="凤">
+            </div>
+            <div class="carousel-item">
+              <img src="狮子.jpg" alt="狮子">
+            </div>
+            <div class="carousel-item">
+              <img src="天马.jpg" alt="天马">
+            </div>
+          </div>
+        </div>
+
+        <div class="main-img">
+          <img src="故宫介绍页主图.jpg" alt="主图">
+        </div>
+      </div>
+
+      <div class="right-area right-wrapper">
+        <div class="img-item">
+          <div class="img-box">
+            <img src="太和殿.jpg" alt="图1">
+          </div>
+          <div class="small-text-box">◆——————太和殿——————◆</div>
+        </div>
+
+        <div class="text-box">
+          ✿ 是故宫体量最大、等级最高的建筑，重檐庑殿顶；<br><br>
+          ✿ 面阔11间，进深5间，建筑面积2381㎡；<br><br>
+          ✿ 用于登基、大婚、册立皇后、命将出征等大典；<br><br>
+          ✿ 殿顶垂脊有10个走兽（最高规制）。
+        </div>
+
+        <div class="text-box">
+          ✿ 乃后三宫之首，重檐庑殿顶；<br><br>
+          ✿ 明代及清初为皇帝寝宫；<br><br>
+          ✿ 后改为皇帝日常理政、举行家宴之地。
+        </div>
+
+        <div class="img-item">
+          <div class="img-box">
+            <img src="./乾清殿.jpg" alt="图2">
+          </div>
+          <div class="small-text-box">◆——————乾清宫——————◆</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部小圆区域 原始内容完全保留 -->
+    <div class="flow-section">
+      <div class="flow-item">
+        <div class="flow-circle">
+          <img src="结构.jpg" alt="图4">
+        </div>
+        <div class="flow-text">✄ 结构</div>
+      </div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-item">
+        <div class="flow-circle">
+          <img src="排水.png" alt="图5">
+        </div>
+        <div class="flow-text">✄ 排水</div>
+      </div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-item">
+        <div class="flow-circle">
+          <img src="装饰.jpg" alt="图6">
+        </div>
+        <div class="flow-text">✄ 装饰</div>
+      </div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-item">
+        <div class="flow-circle">
+          <img src="礼制.jpg" alt="图7">
+        </div>
+        <div class="flow-text">✄ 礼制</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 👇 AI逻辑（和吊脚楼/安平桥/开封府完全一致，后端不用改） -->
+  <script>
+    const aiBtn = document.getElementById('aiBtn');
+    const aiInput = document.getElementById('aiInput');
+    const aiAnswer = document.getElementById('aiAnswer');
+
+    aiBtn.onclick = async () => {
+      const prompt = aiInput.value.trim();
+      if (!prompt) return;
+      aiAnswer.innerText = 'AI 正在思考中...';
+      try {
+        const res = await fetch('/api/ai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        aiAnswer.innerText = data.answer || '暂无回答';
+      } catch (e) {
+        aiAnswer.innerText = '请求失败，请确保后端服务已启动';
+      }
+    };
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,215 @@
+/* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Microsoft YaHei", sans-serif;
+}
+
+body {
+    background-color: #f5f0e6;
+    color: #333;
+    line-height: 1.8;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #8b0000; /* 赭红色，新中式主色 */
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 图片区 */
+.img-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 30px;
+    border: 8px solid #8b0000;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.main-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: opacity 0.3s ease;
+}
+
+/* 轴线热区（透明可点击） */
+.hotzone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    cursor: pointer;
+    background: transparent;
+    transition: background 0.3s ease;
+}
+
+.hotzone:hover {
+    background: rgba(255, 215, 0, 0.2); /*  hover金色高亮 */
+}
+
+.west-line {
+    left: 0;
+    width: 33.33%;
+}
+
+.center-line {
+    left: 33.33%;
+    width: 33.33%;
+}
+
+.east-line {
+    right: 0;
+    width: 33.33%;
+}
+
+/* 介绍区 */
+.intro-wrapper {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.intro-wrapper h2 {
+    color: #8b0000;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #8b0000;
+    padding-bottom: 10px;
+}
+
+.intro-content p {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    text-indent: 2em;
+}
+
+.toggle-btn {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 30px auto 0;
+    padding: 12px 24px;
+    background: #8b0000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.toggle-btn:hover {
+    background: #a52a2a;
+}
+
+/* 弹窗样式 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: #fff;
+    width: 90%;
+    max-width: 1000px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    color: #8b0000;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    z-index: 10;
+}
+
+.close-btn:hover {
+    color: #a52a2a;
+}
+
+.modal-body {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 30px;
+    gap: 30px;
+    align-items: center;
+}
+
+.modal-img {
+    flex: 1 1 400px;
+    max-width: 500px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    /* 3D立体效果 */
+    transform: perspective(1000px) rotateY(-5deg);
+    transition: transform 0.3s ease;
+}
+
+.modal-img:hover {
+    transform: perspective(1000px) rotateY(0deg);
+}
+
+.modal-text {
+    flex: 1 1 400px;
+    font-size: 1.1rem;
+    line-height: 1.9;
+}
+
+.modal-text h3 {
+    color: #8b0000;
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #8b0000;
+    padding-bottom: 8px;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .title {
+        font-size: 1.8rem;
+    }
+    .modal-body {
+        flex-direction: column;
+        padding: 20px;
+    }
+    .modal-img {
+        max-width: 100%;
+    }
+}

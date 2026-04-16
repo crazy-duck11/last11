@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=devige-width, initial-scale=1.0">
+    <title>开封府 · 北宋天下首府</title>
+    <link rel="stylesheet" href="府.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- 标题 -->
+        <h1 class="title">开封府 · 北宋天下首府</h1>
+
+        <!-- 图片展示区 -->
+        <div class="img-wrapper">
+            <img id="main-img" src="开封府1.jpg" alt="开封府全景" class="main-img">
+            <!-- 轴线点击热区 -->
+            <div class="hotzone west-line" id="west-line" data-area="west"></div>
+            <div class="hotzone center-line" id="center-line" data-area="center"></div>
+            <div class="hotzone east-line" id="east-line" data-area="east"></div>
+        </div>
+
+        <!-- 文字介绍区 -->
+        <div class="intro-wrapper" id="intro-wrapper">
+            <h2>整体概况</h2>
+            <div class="intro-content">
+                <p><strong>始建</strong>：五代后梁开平元年（907年），朱温升汴州为开封府。</p>
+                <p><strong>鼎盛（北宋）</strong>：都城东京（汴梁）的“天下首府”，辖17县，掌司法、治安、户籍、赋税。</p>
+                <p><strong>衰落</strong>：北宋后地位下降，原建筑被黄河水患、战火彻底摧毁。</p>
+                <p><strong>重建</strong>：2002-2003年依《营造法式》复建，2003年开放。</p>
+            </div>
+            <button id="toggle-btn" class="toggle-btn">点击查看轴线分区 →</button>
+        </div>
+
+        <!-- 弹窗：3D图+介绍 -->
+        <div class="modal" id="modal">
+            <div class="modal-content">
+                <span class="close-btn" id="close-btn">&times;</span>
+                <div class="modal-body">
+                    <img id="modal-img" src="" alt="区域3D图" class="modal-img">
+                    <div id="modal-text" class="modal-text"></div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="府.js"></script>
+</body>
+
+</html>
