@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>中国古代建筑</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #f0ebe3;
+      font-family: "宋体", serif;
+    }
+
+    .scroll-map {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: #e8e2d8;
+      background-image: url("./网页主图.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      animation: mapShow 1.5s ease-in-out;
+    }
+
+    /* ========== 新增：背景柔光蒙版 提升前景层次感 不破坏原图 ========== */
+    .scroll-map::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.05) 40%, rgba(0, 0, 0, 0.1));
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ========== 新增：顶部欢迎引导栏 完全匹配古风主题 ========== */
+    .welcome-guide {
+      position: absolute;
+      top: 6%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      background: linear-gradient(135deg, rgba(156, 44, 26, 0.9), rgba(120, 30, 15, 0.9));
+      border: 1px solid #d4af37;
+      border-radius: 8px;
+      padding: 12px 32px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+      animation: guideFade 1.8s ease-out 0.8s both;
+      text-align: center;
+    }
+
+    .welcome-guide p {
+      color: #f8f0e0;
+      font-size: clamp(14px, 2vw, 18px);
+      font-family: "楷体", "宋体", serif;
+      letter-spacing: 1.5px;
+      line-height: 1.6;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+      font-weight: 500;
+    }
+
+    /* 建筑图标容器 */
+    .building-item {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      transform: translateX(-50%);
+      cursor: pointer;
+      background: #d9d2c7;
+      border: 2px solid #fff;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 5;
+      margin-top: 30px;
+      /* 新增：图标加载淡入动画 */
+      animation: itemFade 1s ease-out both;
+    }
+
+    /* 新增：错开图标加载动画 更有层次感 */
+    #build-1 {
+      animation-delay: 1s;
+    }
+
+    #build-2 {
+      animation-delay: 1.15s;
+    }
+
+    #build-3 {
+      animation-delay: 1.3s;
+    }
+
+    #build-4 {
+      animation-delay: 1.45s;
+    }
+
+    #build-6 {
+      animation-delay: 1.6s;
+    }
+
+    .building-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 4px;
+      /* 新增：图片加载容错优化 */
+      display: block;
+    }
+
+    /* 鼠标悬浮弹动效果 优化质感 */
+    .building-item:hover {
+      transform: translateX(-50%) translateY(-12px) scale(1.12);
+      filter: brightness(1.15);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 12px rgba(212, 175, 55, 0.4);
+      z-index: 6;
+    }
+
+    /* 新增：点击反馈 人性化交互 */
+    .building-item:active {
+      transform: translateX(-50%) translateY(-6px) scale(1.05);
+    }
+
+    /* ========== 古风建筑名字标签（匾额样式）优化质感 ========== */
+    .building-label {
+      position: absolute;
+      bottom: -38px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      background: #9c2c1a;
+      color: #f8f0e0;
+      padding: 5px 16px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: "楷体", "宋体", serif;
+      letter-spacing: 2px;
+      font-weight: 600;
+      border: 1px solid #d4af37;
+      pointer-events: none;
+      z-index: 5;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 3px 8px rgba(60, 40, 20, 0.3);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* 悬浮时标签跟着图标一起上移，保持间距 */
+    .building-item:hover .building-label {
+      transform: translateX(-50%) translateY(-12px);
+      filter: brightness(1.2);
+    }
+
+    /* 位置布局：2行3列，完全对齐 完全保留原有位置 */
+    #build-1 {
+      left: 20%;
+      top: 20%;
+    }
+
+    #build-2 {
+      left: 50%;
+      top: 20%;
+    }
+
+    #build-3 {
+      left: 80%;
+      top: 20%;
+    }
+
+    #build-4 {
+      left: 35%;
+      top: 60%;
+    }
+
+    #build-6 {
+      left: 65%;
+      top: 60%;
+    }
+
+    /* ========== 动画定义 ========== */
+    @keyframes mapShow {
+      from {
+        opacity: 0;
+        filter: blur(5px);
+      }
+
+      to {
+        opacity: 1;
+        filter: blur(0);
+      }
+    }
+
+    /* 新增：引导栏淡入动画 */
+    @keyframes guideFade {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    /* 新增：图标淡入动画 */
+    @keyframes itemFade {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    /* ========== 新增：移动端适配 人性化兼容 ========== */
+    @media (max-width: 768px) {
+      .building-item {
+        width: clamp(80px, 20vw, 100px);
+        height: clamp(80px, 20vw, 100px);
+      }
+
+      .building-label {
+        font-size: 12px;
+        padding: 4px 12px;
+        bottom: -32px;
+      }
+
+      #build-1 {
+        left: 18%;
+        top: 22%;
+      }
+
+      #build-2 {
+        left: 50%;
+        top: 22%;
+      }
+
+      #build-3 {
+        left: 82%;
+        top: 22%;
+      }
+
+      #build-4 {
+        left: 30%;
+        top: 62%;
+      }
+
+      #build-6 {
+        left: 70%;
+        top: 62%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .welcome-guide {
+        width: 90%;
+        padding: 10px 16px;
+      }
+
+      .welcome-guide p {
+        letter-spacing: 1px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="scroll-map">
+    <!-- ========== 新增：要求的欢迎引导索引 ========== -->
+    <div class="welcome-guide">
+      <p>✾——— 您好 ———✾
+        <br>
+        欢迎来到中国古代建筑介绍界面！
+        <br>
+        点击屏幕上的图片框可进入对应介绍页面！
+      </p>
+    </div>
+
+    <!-- 故宫 完全保留原有链接、id、内容 -->
+    <a href="./故宫最终版.html" target="_blank" class="building-item" id="build-1">
+      <img src="网页封面故宫.jpg" alt="故宫" onerror="this.style.display='none'">
+      <span class="building-label">故宫</span>
+    </a>
+    <!-- 开封府 完全保留原有链接、id、内容 -->
+    <a href="./府.html" target="_blank" class="building-item" id="build-2">
+      <img src="网页封面开封府.jpg" alt="开封府" onerror="this.style.display='none'">
+      <span class="building-label">开封府</span>
+    </a>
+    <!-- 吊脚楼 完全保留原有链接、id、内容 -->
+    <a href="./吊脚楼.html" target="_blank" class="building-item" id="build-3">
+      <img src="网页封面吊脚楼.jpg" alt="吊脚楼" onerror="this.style.display='none'">
+      <span class="building-label">吊脚楼</span>
+    </a>
+    <!-- 客家土楼 完全保留原有链接、id、内容 -->
+    <a href="土楼.html" target="_blank" class="building-item" id="build-4">
+      <img src="./网页封面土楼.jpg" alt="客家土楼" onerror="this.style.display='none'">
+      <span class="building-label">客家土楼</span>
+    </a>
+    <!-- 安平桥 完全保留原有链接、id、内容 -->
+    <a href="./安平桥.html" target="_blank" class="building-item" id="build-6">
+      <img src="网页封面安平桥.jpg" alt="安平桥" onerror="this.style.display='none'">
+      <span class="building-label">安平桥</span>
+    </a>
+  </div>
+
+  <script>
+    window.onload = function () {
+      console.log("水墨地图加载完成，古风建筑名称已添加");
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>吊脚楼介绍</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "仿宋", sans-serif;
+    }
+
+    body {
+      background-color: #f8f2e9;
+      margin: 0;
+    }
+
+    /* AI 搜索轻量样式 — 不挤压布局 */
+    .ai-search-container {
+      max-width: 1000px;
+      margin: 10px auto 20px;
+      padding: 0 20px;
+    }
+    .ai-search-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    #aiInput {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #8c4a42;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+    }
+    #aiBtn {
+      padding: 10px 20px;
+      background: #8c4a42;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #aiAnswer {
+      margin-top: 10px;
+      padding: 14px;
+      background: #fff;
+      border-radius: 6px;
+      min-height: 60px;
+      line-height: 1.7;
+      font-size: 14px;
+      border: 1px solid #7fa284;
+    }
+
+    .col {
+      animation: fadeInUp 1s ease-in-out forwards;
+      opacity: 0;
+      animation-delay: 0.2s;
+    }
+
+    .col-center {
+      animation: fadeInUp 1s ease-in-out forwards;
+      opacity: 0;
+      animation-delay: 0.5s;
+    }
+
+    .col-right {
+      animation: fadeInUp 1s ease-in-out forwards;
+      opacity: 0;
+      animation-delay: 0.8s;
+    }
+
+    .flow-section {
+      animation: fadeInUp 1s ease-in-out forwards;
+      opacity: 0;
+      animation-delay: 1s;
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      padding: 25px;
+      max-width: 1920px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 170px 170px 450px 1fr;
+      gap: 30px;
+      margin-bottom: 60px;
+      align-items: start;
+    }
+
+    .col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-left: 20px;
+      margin-top: 20px;
+      height: 600px;
+      flex-shrink: 0;
+    }
+
+    .title-box {
+      padding: 8px 5px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .img-box {
+      border: transparent;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+      color: #333;
+      word-break: break-all;
+      min-height: 80px;
+      height: 200px;
+      transition: all 0.3s ease;
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .img-box:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+
+    .col-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .big-circle {
+      width: 570px;
+      height: 570px;
+      border-radius: 50%;
+      font-size: 48px;
+      margin-top: 30px;
+      background-color: #fff;
+      border: 3px solid #8c4a42 ;
+      margin-left: 180px;
+      cursor: pointer;
+    }
+
+    .col-right {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .chart-box {
+      width: 100%;
+      height: 250px;
+      width: 460px;
+      margin-left: 200px;
+      background-color: #fff;
+    }
+
+    .right-item {
+      display: flex;
+      align-items: center;
+      gap: -30px;
+    }
+
+    .small-circle {
+      width: 115px;
+      height: 115px;
+      border-radius: 50%;
+      font-size: 20px;
+      background-color: #fff;
+      margin-left: 180px;
+    }
+
+    .right-item .text-box {
+      min-width: 270px;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-left: 100px;
+      border: 3px solid #7fa284;
+      border-radius: 8px;
+      background-color: #fff;
+      cursor: pointer;
+    }
+
+    .flow-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 1px;
+      margin-left: 5px;
+      position: relative;
+      clear: both;
+    }
+
+    .flow-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      flex: 1;
+      position: relative;
+    }
+
+    .flow-item .img-box {
+      width: 90px !important;
+      height: 90px !important;
+      border-radius: 50% !important;
+      font-size: 18px !important;
+      background: #fff !important;
+      padding: 0 !important;
+      border: solid #8c4a42 !important;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      margin-top: -30px;
+    }
+
+    .flow-item .img-box:hover {
+      transform: translateY(-6px) scale(1.08);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .flow-arrow {
+      font-size: 90px;
+      color: #E68E7C;
+      line-height: 1;
+      margin-top: -20px;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .modal-content {
+      background: #fff;
+      width: 600px;
+      height: 400px;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      position: relative;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid #8b4513;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background-color: transparent;
+    }
+
+    .modal-inner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .modal-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .modal-img {
+      width: 380px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .modal-text {
+      width: 220px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .flow-popup {
+      position: absolute;
+      top: 105%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff9e6;
+      border: 3px solid #d4a017;
+      border-radius: 10px;
+      padding: 12px 16px;
+      min-width: 220px;
+      box-shadow: 0 6px 20px rgba(177, 115, 2, 0.3);
+      z-index: 99;
+      display: none;
+      text-align: center;
+      color: #6c3300;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .flow-popup::after {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 8px solid #d4a017;
+    }
+
+    .flow-item.show-popup .flow-popup {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- AI 搜索模块（不会挤变形） -->
+<div class="ai-search-container">
+  <div class="ai-search-row">
+    <input type="text" id="aiInput" placeholder="请输入关于吊脚楼的问题...">
+    <button id="aiBtn">AI 问答</button>
+  </div>
+  <div id="aiAnswer"></div>
+</div>
+
+<div class="container">
+  <div class="main-content">
+    <div class="col">
+      <div class="title-box">---•门•---</div>
+      <div class="img-box"><img src="实拼门.jpg"></div>
+      <div class="img-box"><img src="框档门.jpg"></div>
+      <div class="img-box"><img src="格扇门.jpg"></div>
+    </div>
+
+    <div class="col">
+      <div class="title-box">---•窗•---</div>
+      <div class="img-box"><img src="平开窗.jpg"></div>
+      <div class="img-box"><img src="直楞窗.jpg"></div>
+      <div class="img-box"><img src="花窗.jpg"></div>
+    </div>
+
+    <div class="col-center">
+      <div class="img-box big-circle" id="img1" onclick="openModal('modalTime')">
+        <img src="吊脚楼主图.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+      </div>
+    </div>
+
+    <div class="col-right">
+      <div class="chart-box" id="stackChart"></div>
+
+      <div class="right-item">
+        <div class="img-box small-circle"><img src="吊脚楼结构解剖图.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+        <div class="text-box clickable" onclick="openModal('modal7')"><p>典型类型</p></div>
+      </div>
+      <div class="right-item">
+        <div class="img-box small-circle"><img src="吊脚楼缩略图2.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+        <div class="text-box clickable" onclick="openModal('modal8')"><p>精妙结构</p></div>
+      </div>
+      <div class="right-item">
+        <div class="img-box small-circle"><img src="吊脚楼缩略图.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+        <div class="text-box clickable" onclick="openModal('modal9')"><p>多样花纹</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-section">
+    <div class="flow-item" onclick="togglePopup(this)">
+      <div class="img-box"><img src="选址.png"></div>
+      <div class="flow-popup">
+        <strong>选址</strong><br>依山就势选址，遵循背山面水风水原则
+      </div>
+    </div>
+    <span class="flow-arrow">→</span>
+
+    <div class="flow-item" onclick="togglePopup(this)">
+      <div class="img-box"><img src="备料.png"></div>
+      <div class="flow-popup">
+        <strong>备料</strong><br>春季进山伐木，去枝去皮后自然晾干备用
+      </div>
+    </div>
+    <span class="flow-arrow">→</span>
+
+    <div class="flow-item" onclick="togglePopup(this)">
+      <div class="img-box"><img src="排扇.png"></div>
+      <div class="flow-popup">
+        <strong>地面排扇</strong><br>在施工场地地面，将柱、梁、枋通过榫卯拼接，组装成一面面独立墙体排扇
+      </div>
+    </div>
+    <span class="flow-arrow">→</span>
+
+    <div class="flow-item" onclick="togglePopup(this)">
+      <div class="img-box"><img src="立屋竖柱.png"></div>
+      <div class="flow-popup">
+        <strong>立屋竖柱</strong><br>乡邻协作将各面排扇竖直立起，用穿枋横向连接固定，搭建完整木构架
+      </div>
+    </div>
+    <span class="flow-arrow">→</span>
+
+    <div class="flow-item" onclick="togglePopup(this)">
+      <div class="img-box"><img src="上梁.png"></div>
+      <div class="flow-popup">
+        <strong>上梁祈福</strong><br>举行传统上梁仪式，祭梁、安放中梁、抛撒梁粑，祈求建筑稳固、家人安康
+      </div>
+    </div>
+    <span class="flow-arrow">→</span>
+
+    <div class="flow-item" onclick="togglePopup(this)">
+      <div class="img-box"><img src="维护施工.png"></div>
+      <div class="flow-popup">
+        <strong>维护施工</strong><br>架设檩条、椽子，铺设青瓦（传统为茅草、杉皮）完成屋面施工
+      </div>
+    </div>
+    <span class="flow-arrow">→</span>
+
+    <div class="flow-item" onclick="togglePopup(this)">
+      <div class="img-box"><img src="装修竣工.png"></div>
+      <div class="flow-popup">
+        <strong>装修竣工</strong><br>进行内部隔间、门窗安装，修饰外部飞檐翘角，完成整体装修，建筑正式完工
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗 -->
+<div class="modal" id="modal7">
+  <div class="modal-content" style="width:500px;height:800px;">
+    <span class="modal-close" onclick="closeModal('modal7')">×</span>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
+      <img src="吊脚楼类型.jpg" style="width:95%;height:90%;object-fit:contain;">
+      <div style="font-size:32px;font-weight:bold;">吊脚楼典型类型</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal8">
+  <div class="modal-content" style="width:700px;height:800px;">
+    <span class="modal-close" onclick="closeModal('modal8')">×</span>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:20px;padding:20px;">
+      <img src="1.jpg" style="width:270px;height:200px;object-fit:contain;">
+      <img src="2.jpg" style="width:270px;height:200px;object-fit:contain;">
+      <img src="3.jpg" style="width:270px;height:200px;object-fit:contain;">
+      <img src="4.jpg" style="width:270px;height:200px;object-fit:contain;">
+      <img src="5.jpg" style="width:270px;height:200px;object-fit:contain;">
+      <img src="6.jpg" style="width:270px;height:200px;object-fit:contain;">
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal9">
+  <div class="modal-content">
+    <span class="modal-close" onclick="closeModal('modal9')">×</span>
+    <div class="modal-inner">
+      <div class="modal-row">
+        <div class="modal-img"><img src="几何纹.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+        <div class="modal-text">几何纹</div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-img"><img src="植物花纹.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+        <div class="modal-text">植物纹</div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-img"><img src="动物纹.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+        <div class="modal-text">动物纹</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalTime">
+  <div class="modal-content" style="width:1000px;height:500px;">
+    <span class="modal-close" onclick="closeModal('modalTime')">×</span>
+    <img src="时间轴.png" style="width:100%;height:100%;object-fit:contain;">
+  </div>
+</div>
+
+<script>
+  // 图表
+  const stackChart = echarts.init(document.getElementById('stackChart'));
+  const stackOption = {
+    title: { text: '堆叠统计图', left: 'center', textStyle: { fontSize: 18 } },
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+    legend: { data: ['花窗', '小窗', '大门'], top: 30, left: 'center' },
+    grid: { left: '8%', right: '8%', bottom: '15%', containLabel: true },
+    xAxis: { type: 'category', data: ['几何纹', '文字纹', '花卉纹', '动物纹', '人物纹'] },
+    yAxis: { type: 'value' },
+    series: [
+      { name: '花窗', type: 'bar', stack: 'total', data: [45,8,28,15,4] },
+      { name: '小窗', type: 'bar', stack: 'total', data: [68,16,4,12,0] },
+      { name: '大门', type: 'bar', stack: 'total', data: [32,28,15,22,3] }
+    ]
+  };
+  stackChart.setOption(stackOption);
+
+  // 弹窗
+  function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
+  }
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+
+  // 流程弹窗
+  function togglePopup(item) {
+    item.classList.toggle('show-popup');
+    document.querySelectorAll('.flow-item').forEach(i => {
+      if (i !== item) i.classList.remove('show-popup');
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.flow-item')) {
+      document.querySelectorAll('.flow-item').forEach(i => i.classList.remove('show-popup'));
+    }
+  });
+
+  window.addEventListener('resize', () => stackChart.resize());
+
+  // AI 搜索功能
+  const aiBtn = document.getElementById('aiBtn');
+  const aiInput = document.getElementById('aiInput');
+  const aiAnswer = document.getElementById('aiAnswer');
+
+  aiBtn.addEventListener('click', async () => {
+    const prompt = aiInput.value.trim();
+    if (!prompt) return;
+    aiAnswer.textContent = '思考中...';
+    try {
+      const res = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+      const data = await res.json();
+      aiAnswer.textContent = data.answer || '暂无回答';
+    } catch (e) {
+      aiAnswer.textContent = '请求失败，请检查后端服务';
+    }
+  });
+</script>
+
+</body>
+</html>

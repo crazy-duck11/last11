@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>安平桥介绍</title>
+  <!-- 引入CSS -->
+  <link rel="stylesheet" href="安平桥.css">
+
+  <!-- 👇 在这里加 AI 搜索样式（不影响你原有） -->
+  <style>
+    .ai-search-bar {
+      max-width: 900px;
+      margin: 20px auto 0;
+      display: flex;
+      gap: 10px;
+      padding: 0 20px;
+    }
+    #aiInput {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 2px solid #8c4a42;
+      border-radius: 8px;
+      outline: none;
+    }
+    #aiBtn {
+      padding: 12px 24px;
+      background: #8c4a42;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #aiBtn:hover {
+      background: #703a33;
+    }
+    .answer-box {
+      max-width: 900px;
+      margin: 15px auto 30px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      border: 2px solid #7fa284;
+      min-height: 80px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 👇 AI 搜索框（加在最顶部，不破坏你原来结构） -->
+  <div class="ai-search-bar">
+    <input type="text" id="aiInput" placeholder="请输入关于安平桥的问题...">
+    <button id="aiBtn">AI 问答</button>
+  </div>
+  <div class="answer-box" id="aiAnswer">AI回答将显示在这里</div>
+  <!-- 👆 到此为止，下面全是你原来的代码，一字没改 -->
+
+  <div class="container">
+    <h1>安平桥 · 天下无桥长此桥</h1>
+
+    <!-- 图片 + 按钮区域 -->
+    <div class="image-wrapper">
+      <img src="安平桥.jpg" alt="安平桥" class="anping-bridge-img">
+
+      <button class="feature-btn btn-human" data-target="modal-human">人文石刻</button>
+      <button class="feature-btn btn-beam" data-target="modal-beam">巨梁飞架</button>
+      <button class="feature-btn btn-pier" data-target="modal-pier">三种桥墩</button>
+      <button class="feature-btn btn-base" data-target="modal-base">睡木沉基</button>
+    </div>
+
+    <!-- 整体概况 -->
+    <section class="overview">
+      <h2>整体概况</h2>
+      <p>安平桥始建于南宋绍兴八年（1138年），全长约2255米，是中国现存最长的古代跨海梁式石桥，被誉为“天下无桥长此桥”。</p >
+    </section>
+  </div>
+
+  <!-- 弹窗 -->
+  <div class="mask"></div>
+
+  <div class="modal" id="modal-human">
+    <div class="modal-close">×</div>
+    <h3>人文石刻</h3>
+    <div class="modal-text-with-img">
+      <img src="人文石刻.jpg" alt="安平桥人文石刻" class="modal-small-img">
+    </div>
+    <p>桥上留存大量历代碑刻、石将军、石塔与亭阁，是泉州海洋文明与商贸文化的重要见证。</p >
+  </div>
+
+  <div class="modal" id="modal-beam">
+    <div class="modal-close">×</div>
+    <h3>巨梁飞架</h3>
+    <div class="modal-text-with-img">
+      <img src="巨梁飞架.jpg" alt="安平桥巨梁飞架" class="modal-small-img">
+    </div>
+    <p>采用巨型花岗石梁，利用潮汐浮运架设，单条石梁重数吨至十几吨，工程极为壮观。</p >
+  </div>
+
+  <div class="modal" id="modal-pier">
+    <div class="modal-close">×</div>
+    <h3>三种桥墩</h3>
+    <div class="modal-text-with-img">
+      <img src="三种桥墩.jpg" alt="安平桥三种桥墩" class="modal-small-img">
+
+    </div>
+    <p>根据水流环境分别采用长方形、单尖船形、双尖船形桥墩，科学分水减冲。</p >
+  </div>
+
+  <div class="modal" id="modal-base">
+    <div class="modal-close">×</div>
+    <h3>睡木沉基</h3>
+    <div class="modal-text-with-img">
+      <img src="睡木沉基.jpg" alt="安平桥睡木沉基" class="modal-small-img">
+
+    </div>
+    <p>在软泥底打入木桩并铺设枕木形成筏式基础，使桥身在淤泥上千年不陷。</p >
+  </div>
+
+  <!-- 引入JS -->
+  <script src="安平桥.js"></script>
+
+  <!-- 👇 最后加 AI 逻辑，跟你吊脚楼一模一样 -->
+  <script>
+    const aiBtn = document.getElementById('aiBtn');
+    const aiInput = document.getElementById('aiInput');
+    const aiAnswer = document.getElementById('aiAnswer');
+
+    aiBtn.onclick = async () => {
+      const prompt = aiInput.value.trim();
+      if (!prompt) return;
+      aiAnswer.innerText = 'AI 正在思考中...';
+      try {
+        const res = await fetch('/api/ai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        aiAnswer.innerText = data.answer || '暂无回答';
+      } catch (e) {
+        aiAnswer.innerText = '请求失败，请确保后端服务已启动';
+      }
+    };
+  </script>
+</body>
+
+</html>
